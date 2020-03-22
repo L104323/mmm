@@ -10,6 +10,9 @@ const questionbb=require('./api/question');
 const point=require('./api/point');
 const shopType=require('./api/shopType');
 const category=require('./api/category');
+const order=require('./api/order');
+const shopCar=require('./api/shopCar');
+const address=require('./api/address');
 
 app.use('/',user);
 
@@ -26,5 +29,11 @@ app.use('/',point);
 app.use('/',shopType);
 
 app.use('/',category);
+
+app.use('/',order);
+
+app.use('/',shopCar);
+
+app.use('/',address);
 
 module.exports=app;

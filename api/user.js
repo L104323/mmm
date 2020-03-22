@@ -15,7 +15,6 @@ app.use('/public',express.static('./public')); //定要设置为静态文件，�
 
 // 图片上传：把本地图片上传到express项目public文件夹里，用路径访问，如http://localhost:5000/public/avatar/图片名
 app.post('/upload',function(req,res,next){
-    console.log('ttt')
     let AVATAR_UPLOAD_FOLDER = '/avatar';
     //创建上传表单
     var form = new formidable.IncomingForm();
@@ -163,7 +162,8 @@ app.post('/user/deleteManyUser',bodyParser.json(),(req,res)=>{
 
 // 用户修改
 app.post('/user/updateUser',bodyParser.json(),(req,res)=>{
-  var id=mongoose.Types.ObjectId(req.body.id)
+  // console.log(req.body)
+  var id=mongoose.Types.ObjectId(req.body._id)
   //更新条件
   var whereStr = {'_id':id};  
   //更新内容
@@ -171,9 +171,11 @@ app.post('/user/updateUser',bodyParser.json(),(req,res)=>{
                            password:req.body.password,
                            email:req.body.email,
                            roleId:req.body.roleId,
-                           headImg:req.body.headImg}
+                           headImg:req.body.headImg,
+                           phone:req.body.phone}
                   };
   db.update('design','user',whereStr,updateStr,res,true)
 })
+
 
 module.exports=app;

@@ -23,10 +23,17 @@ app.get('/findQuestion',bodyParser.json(),(req,res)=>{
                 randomQuestion.push(arr[index]); //把随机取到的元素存进数组里面
                 arr.splice(index,1); //删除已随机获取到的数组，防止重复
             }
+            // console.log(result)
             res.send(randomQuestion)
             db.close();
         });
     });
 })
+
+
+// 查询所有问题
+app.get('/findAllQuestion',bodyParser.json(),(req,res)=>{
+    db.find('design','question',req.body,res,{},0,0)
+  })
 
 module.exports=app;

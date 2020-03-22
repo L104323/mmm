@@ -56,7 +56,6 @@ app.get('/findShopList',(req,res)=>{
 
 // 添加商品
 app.post('/addShop',bodyParser.json(),(req,res)=>{
-    console.log(req.body)
     db.insert('design','shopList',req.body,res)
 })
 
@@ -66,5 +65,14 @@ app.post('/uploadShop',function(req,res,next){
     upload(req,res,pathImg);
 })
 
+// 查询商品
+app.post('/findShop',bodyParser.json(),(req,res)=>{
+    var whereStr = req.body
+    if (req.body.id) {
+        var id=mongoose.Types.ObjectId(req.body.id)
+        whereStr = { "_id": id}
+    }
+    db.find('design','shopList',whereStr,res,{},0,0)
+})
 
 module.exports=app;
