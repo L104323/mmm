@@ -24,8 +24,10 @@ app.post('/findOrderByuserId',bodyParser.json(),(req,res)=>{
     db.find('design','order',whereStr,res,{},0,0)
 })
 
-// 支付时修改订单支付时间
+// 支付时修改订单支付时间和状态
 app.post('/updateOrder',bodyParser.json(),(req,res)=>{
+    console.log('fffff')
+    console.log(req.body)
     //更新条件
     var whereStr = {'orderNo':req.body.orderNo};  
     //更新内容

@@ -13,6 +13,8 @@ const category=require('./api/category');
 const order=require('./api/order');
 const shopCar=require('./api/shopCar');
 const address=require('./api/address');
+const answerRecord=require('./api/answerRecord');
+const collect=require('./api/collect');
 
 app.use('/',user);
 
@@ -35,5 +37,9 @@ app.use('/',order);
 app.use('/',shopCar);
 
 app.use('/',address);
+
+app.use('/',answerRecord);
+
+app.use('/',collect);
 
 module.exports=app;

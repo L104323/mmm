@@ -10,15 +10,16 @@ var mongoose=require('mongoose');
 
 // 添加积分
 app.post('/addPoint',bodyParser.json(),(req,res)=>{
-    // console.log(req.body)
     db.insert('design','point',req.body,res)
 })
 
 // 查询所有积分
-app.get('/fintPoint',bodyParser.json(),(req,res)=>{
-    // console.log(req.body)
-    console.log('0000000')
-    db.find('design','point',{},res)
+// app.post('/fintPoint',bodyParser.json(),(req,res)=>{
+//     db.find('design','point',req.body,res,{},0,0)
+// })
+
+app.get('/fintPoint',(req,res)=>{
+    db.find('design','point',req.query,res,{},0,0)
 })
 
 module.exports=app;

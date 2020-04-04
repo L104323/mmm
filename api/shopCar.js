@@ -10,12 +10,38 @@ var mongoose=require('mongoose');
 
 // 添加购物车
 app.post('/addShopCar',bodyParser.json(),(req,res)=>{
-    db.insert('design','shopCar',req.body,res)
+    var shopCarInfo = req.body
+    shopCarInfo.shopId=mongoose.Types.ObjectId(shopCarInfo.shopId)
+    db.insert('design','shopCar',shopCarInfo,res)
 })
 
 // 查询购物车
 app.post('/findShopCar',bodyParser.json(),(req,res)=>{
-    db.find('design','shopCar',req.body,res)
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db1) {
+        if (err) throw err;
+        var dbo = db1.db("design");
+        // 多表查询
+        dbo.collection('shopCar').aggregate([
+          {
+              $match://条件筛选关键词，类似mysql中的where
+              {
+                  userId: req.body.userId,//指定条件,在这里我指定了id,
+              }
+          },
+          { $lookup:
+             {
+               from: 'shopList',            // 右集合
+               localField: 'shopId',    // 左集合 join 字段
+               foreignField: '_id',         // 右集合 join 字段
+               as: 'shopDetails'           // 新生成字段（类型array）
+             }
+           }
+          ]).toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result)
+          db1.close();
+        });
+    });
 })
 
 // 修改购物车

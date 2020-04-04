@@ -54,9 +54,33 @@ app.get('/findShopList',(req,res)=>{
     })
 })
 
+app.get('/findShopList2',bodyParser.json(),(req,res)=>{
+    MongoClient.connect(url, { useNewUrlParser: true,useUnifiedTopology: true }, function(err, db1) {
+        if (err) throw err;
+        var dbo = db1.db("design");
+        // 多表查询
+        dbo.collection('shopType').aggregate([
+            { $lookup:
+                {
+                from: 'shopList',            // 右集合
+                localField: '_id',    // 左集合 join 字段
+                foreignField: 'typeId',         // 右集合 join 字段
+                as: 'shopDetails'           // 新生成字段（类型array）
+                }
+            } 
+          ]).toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result)
+          db1.close();
+        });
+    });
+})
+
 // 添加商品
 app.post('/addShop',bodyParser.json(),(req,res)=>{
-    db.insert('design','shopList',req.body,res)
+    var whereStr = req.body
+    whereStr.typeId = mongoose.Types.ObjectId(whereStr.typeId)
+    db.insert('design','shopList',whereStr,res)
 })
 
 //上传图片
@@ -68,11 +92,40 @@ app.post('/uploadShop',function(req,res,next){
 // 查询商品
 app.post('/findShop',bodyParser.json(),(req,res)=>{
     var whereStr = req.body
+    whereStr.typeId = mongoose.Types.ObjectId(whereStr.typeId)
     if (req.body.id) {
         var id=mongoose.Types.ObjectId(req.body.id)
         whereStr = { "_id": id}
     }
     db.find('design','shopList',whereStr,res,{},0,0)
 })
+
+app.post('/searchShop',bodyParser.json(),(req,res)=>{
+    var whereStr = req.body
+    const reg=new RegExp(req.body.shopName,'i'); //不区分大小写，实现模糊查询
+    var whereStr = {"shopName":{$regex:reg}};
+    db.find('design','shopList',whereStr,res,{},0,0)
+})
+
+// 商品
+app.post('/updateShop',bodyParser.json(),(req,res)=>{
+    var updateShop = req.body
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db1) {
+        if (err) throw err;
+        var dbo = db1.db("design");
+        updateShop.forEach(item=>{
+            var id=mongoose.Types.ObjectId(item.shopId)
+            //更新条件
+            var whereStr = {'_id':id}; 
+            var updateStr = {$set: { "stock" : item.stock }};
+            dbo.collection("shopList").updateOne(whereStr, updateStr, function(err, result) {
+                if (err) throw err;
+            });
+        })
+        res.send({msg:'ok'})
+        db1.close();
+    });
+})
+
 
 module.exports=app;

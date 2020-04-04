@@ -16,10 +16,10 @@ module.exports.insert=function(dbase,col,myobj,resp){
 		if(!(myobj instanceof Array)){
 			myobj=[myobj];
 		}
-		console.log(myobj)
+		// console.log(myobj)
 	    dbo.collection(col).insertMany(myobj, function(err, res) {
 	        if (err) throw err;
-	        console.log(res)
+	        // console.log(res)
 	        db.close();
 	        resp.send(res)
 	    });

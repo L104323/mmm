@@ -97,6 +97,7 @@ app.post('/upload',function(req,res,next){
 
 // 所有用户查询
 app.post('/user/login',bodyParser.json(),(req,res)=>{
+  // console.log(req.body)
   db.find('design','user',req.body,res,{},0,0)
 })
 
